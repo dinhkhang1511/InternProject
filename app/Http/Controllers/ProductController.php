@@ -160,10 +160,11 @@ class ProductController extends Controller
 
         if(in_array($status, $array))
         {
-            $products = DB::table('products')->where('status', $status)->simplePaginate(3);
             $approve = DB::table('products')->where('status','approve')->count('*');
             $reject = DB::table('products')->where('status','reject')->count('*');
             $pending = DB::table('products')->where('status','pending')->count('*');
+
+            $products = DB::table('products')->where('status', $status)->orderBy('id','desc')->simplePaginate(3);
             return view('products')->with(['products' => $products,
                                            'approve' => $approve,
                                            'reject' => $reject,
