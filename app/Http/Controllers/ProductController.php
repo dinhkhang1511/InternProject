@@ -22,7 +22,10 @@ class ProductController extends Controller
         $reject = DB::table('products')->where('status','reject')->count('*');
         $pending = DB::table('products')->where('status','pending')->count('*');
 
-        return view('products')->with(['products' => $products, 'approve' => $approve, 'reject' => $reject, 'pending' => $pending]);
+        return view('products')->with(['products' => $products,
+                                       'approve' => $approve,
+                                       'reject' => $reject,
+                                       'pending' => $pending]);
     }
 
     /**
@@ -158,7 +161,13 @@ class ProductController extends Controller
         if(in_array($status, $array))
         {
             $products = DB::table('products')->where('status', $status)->simplePaginate(3);
-            return view('products')->with('products',$products);
+            $approve = DB::table('products')->where('status','approve')->count('*');
+            $reject = DB::table('products')->where('status','reject')->count('*');
+            $pending = DB::table('products')->where('status','pending')->count('*');
+            return view('products')->with(['products' => $products,
+                                           'approve' => $approve,
+                                           'reject' => $reject,
+                                           'pending' => $pending]);
         }
         else
         {
