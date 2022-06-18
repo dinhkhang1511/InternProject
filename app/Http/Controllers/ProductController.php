@@ -17,7 +17,12 @@ class ProductController extends Controller
     {
         //
         $products = DB::table('products')->orderBy('id', 'desc')->simplePaginate(3);
-        return view('products')->with('products',$products);
+
+        $approve = DB::table('products')->where('status','approve')->count('*');
+        $reject = DB::table('products')->where('status','reject')->count('*');
+        $pending = DB::table('products')->where('status','pending')->count('*');
+
+        return view('products')->with(['products' => $products, 'approve' => $approve, 'reject' => $reject, 'pending' => $pending]);
     }
 
     /**

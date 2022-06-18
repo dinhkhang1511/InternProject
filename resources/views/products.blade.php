@@ -8,16 +8,16 @@
           <h2>Sản phẩm</h2>
 
           <div class="button-group">
-              <a href="{{route('status',['status' => 'pending'])}}" class="text-white float-right btn btn-warning m-2">Pending</a>
-              <a href="{{route('status',['status' => 'reject'])}}" class="text-white float-right btn btn-danger m-2">Reject</a>
-              <a href="{{route('status',['status' => 'approve'])}}" class="text-white float-right btn btn-success m-2">Approve</a>
+              <a href="{{route('status',['status' => 'pending'])}}" class="text-white float-right btn btn-warning m-2">Pending ({{$pending}})</a>
+              <a href="{{route('status',['status' => 'reject'])}}" class="text-white float-right btn btn-danger m-2">Reject ({{$reject}})</a>
+              <a href="{{route('status',['status' => 'approve'])}}" class="text-white float-right btn btn-success m-2">Approve ({{$approve}})</a>
 
         </div>
         </div>
         <div class="card-body pt-0 pb-5">
             @if(Session::has('message'))
                 <div class="alert alert-success" role="alert">
-                {{Session::get('message')}}
+                    {{Session::get('message')}}
                 </div>
             @endif
           <table class="table card-table table-responsive table-responsive-large" style="width:100%">
