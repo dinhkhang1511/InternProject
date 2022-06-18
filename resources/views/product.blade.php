@@ -3,15 +3,7 @@
       <div class="col-lg-8">
           <div class="card card-default">
                 <div class="card-header card-header-border-bottom">
-                    @if(isset($product))
-                    <h2>
-                        Sửa sản phẩm
-                    </h2>
-                    @else
-                    <h2>
-                        Thêm sản phẩm
-                    </h2>
-                    @endif
+                    <h2>{{isset($product) ? 'Sửa sản phẩm' : 'Thêm sản phẩm'}}</h2>
                 </div>
 
                 <div class="card-body">
@@ -25,10 +17,10 @@
                             {{Session::get('error')}}
                         </div>
                     @endif
-                    <form method="POST" enctype="multipart/form-data" action="<?= isset($product) ? route('product',['product.update',$product->id]) : route('product.store') ?>" >
+                    <form method="POST" enctype="multipart/form-data" action="<?= isset($product) ? route('product.update',['product' => $product->id]) : route('product.store') ?>" >
                         @csrf
                         @if(isset($product))
-                            @method('DELETE');
+                            @method('PUT');
                         @endif
                         @if($errors->any())
                             @foreach($errors->all() as $error)

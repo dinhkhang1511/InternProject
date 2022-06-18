@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -15,8 +16,8 @@ class ProductController extends Controller
     public function index()
     {
         //
-        $products_ = DB::table('products')->simplePaginate(3);
-        return view('products')->with('products',$products_);
+        $products = DB::table('products')->orderBy('id', 'desc')->simplePaginate(3);
+        return view('products')->with('products',$products);
     }
 
     /**
@@ -41,8 +42,8 @@ class ProductController extends Controller
         //
         $request->validate([
             'name'     => 'unique:products,name|required',
-            'price'    => 'numeric|required|min:1',
-            'quantity' => 'numeric|required|min:1'
+            'price'    => 'required|numeric|min:1',
+            'quantity' => 'required|numeric|min:1'
 
         ],[
             'name.required'      => 'Vui lòng nhập tên sản phẩm',
@@ -74,6 +75,11 @@ class ProductController extends Controller
     public function show($id)
     {
         //
+        if($id === 'approval')
+        {
+            $products =  DB::table('products')->where('status','pending')->orderBy('id','desc')->simplePaginate(3);
+            return view('approve')->with('products', $products);
+        }
     }
 
     /**
@@ -85,6 +91,9 @@ class ProductController extends Controller
     public function edit($id)
     {
         //
+
+        $product = DB::table('products')->find($id);
+        return view('product')->with('product',$product);
     }
 
     /**
@@ -97,6 +106,30 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $request->validate([
+            'name'     => 'required|unique:products,name,' .$id,
+            'price'    => 'required|numeric|min:1',
+            'quantity' => 'required|numeric|min:1'
+
+        ],[
+            'name.required'      => 'Vui lòng nhập tên sản phẩm',
+            'name.unique'        => 'Tên sản phẩm đã tồn tại',
+            'price.required'     => 'Vui lòng nhập giá sản phẩm',
+            'price.numeric'      => 'Giá sản phẩm chỉ được nhập số',
+            'price.min'          => 'Giá sản phẩm nhỏ nhất là 1',
+            'quantity.numeric'   => 'Số lượng sản phẩm chỉ được nhập số',
+            'quantity.min'       => 'Số lượng sản phẩm nhỏ nhất là 1',
+            'quantity.required'  => 'Vui lòng nhập số lượng sản phẩm',
+        ]);
+
+        $affected = DB::table('products')
+                        ->where('id', $id)
+                        ->update([
+                        'name' =>  $request->name,
+                        'price' => $request->price,
+                        'quantity' => $request->quantity]);
+
+        return redirect()->route('product.index')->with('message', 'Sửa thành công');
     }
 
     /**
@@ -119,12 +152,35 @@ class ProductController extends Controller
 
         if(in_array($status, $array))
         {
-            $products_ = DB::table('products')->where('status', $status)->simplePaginate(3);
-            return view('products')->with('products',$products_);
+            $products = DB::table('products')->where('status', $status)->simplePaginate(3);
+            return view('products')->with('products',$products);
         }
         else
         {
-            return redirect('products');
+            return redirect()->route('product.index');
         }
     }
+
+    public function approveProduct(Request $request)
+    {
+        if($request->action === 'approve')
+            $action = 'approve';
+        else if ($request->action === 'reject')
+            $action = 'reject';
+
+        if(is_numeric($request->id))
+        {
+            if(DB::table('products')->find($request->id))
+            {
+                DB::table('products')
+                    ->where('id', $request->id)
+                    ->update([
+                    'status' =>  $action]);
+            }
+            return back()->with('message', 'Duyệt thành công');
+        }
+            return back();
+    }
+
+
 }

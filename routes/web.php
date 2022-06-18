@@ -3,7 +3,7 @@
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Arr;
-
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,10 +17,11 @@ use Illuminate\Support\Arr;
 */
 
 Route::get('/', function () {
-
-    return view('welcome');
+    return redirect()->route('product.index');
 });
 
+
 Route::resource('product', ProductController::class);
+Route::POST('approve', [ProductController::class,'approveProduct'])->name('approve');
 
 Route::get('product/status/{status}',[ProductController::class,'showByStatus'])->name('status');

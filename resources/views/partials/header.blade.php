@@ -1,4 +1,6 @@
-
+@php
+    $currentUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+@endphp
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -75,18 +77,25 @@
 
               <!-- sidebar menu -->
               <ul class="nav sidebar-inner" id="sidebar-menu">
-                  <li  class="active expand" >
+                  <li  class="{{ Str::contains($currentUrl, ['create', 'approval','edit']) ? '' : 'active expand'}}" >
                     <a class=" sidenav-item-link" href="{{route('product.index')}}"
                       aria-expanded="false" aria-controls="dashboard">
                       <i class="mdi mdi-view-dashboard-outline"></i>
                       <span class="nav-text">Sản phẩm</span> <b class="caret"></b>
                     </a>
                   </li>
-                  <li  class=" " >
-                    <a class=" sidenav-item-link" href="{{route('product.create')}}"
+                  <li  class="{{Str::contains($currentUrl,['create','edit']) ? 'active expand' : ''}}" >
+                    <a class=" sidenav-item-link" href="{{strpos($currentUrl,'create') != 0 ? '#' : route('product.create')}}"
                       aria-expanded="false" aria-controls="dashboard">
                       <i class="mdi mdi-view-dashboard-outline"></i>
-                      <span class="nav-text">Thêm Sản phẩm</span> <b class="caret"></b>
+                      <span class="nav-text">{{strpos($currentUrl,'edit') != 0 ? 'Sửa sản phẩm' : 'Thêm Sản phẩm'}}</span> <b class="caret"></b>
+                    </a>
+                  </li>
+                  <li  class="{{strpos($currentUrl,'approval') != 0 ? 'active expand' : ''}}" >
+                    <a class=" sidenav-item-link" href="{{strpos($currentUrl,'approval') != 0 ? '#' : route('product.index').'/approval'}}"
+                      aria-expanded="false" aria-controls="dashboard">
+                      <i class="mdi mdi-view-dashboard-outline"></i>
+                      <span class="nav-text">Duyệt sản phẩm</span> <b class="caret"></b>
                     </a>
                   </li>
               </ul>

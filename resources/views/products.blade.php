@@ -61,16 +61,16 @@
                     <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdown-recent-order2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static"></a>
                     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-recent-order2">
                       <li class="dropdown-item">
-
-                            <button class="text-dark">View</button>
-
-
+                            <a href="{{route('product.index')}}" class="text-dark">View</a>
+                      </li>
+                      <li class="dropdown-item">
+                        <a href="{{route('product.edit',['product' => $product->id])}}" class="text-dark">Edit</a>
                       </li>
                       <li class="dropdown-item">
                         <form method="POST" action="{{route('product.destroy',['product' => $product->id])}}">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="text-dark">Remove</button>
+                            <button type="submit" onclick="return confirm('Are you sure you want to delete this item?');" class="text-dark">Remove</button>
                         </form>
                       </li>
                     </ul>
