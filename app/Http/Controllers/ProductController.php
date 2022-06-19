@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -51,7 +52,8 @@ class ProductController extends Controller
         $request->validate([
             'name'     => 'unique:products,name|required',
             'price'    => 'required|numeric|min:1',
-            'quantity' => 'required|numeric|min:1'
+            'quantity' => 'required|numeric|min:1',
+            'image'    => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
 
         ],[
             'name.required'      => 'Vui lòng nhập tên sản phẩm',
@@ -62,16 +64,31 @@ class ProductController extends Controller
             'quantity.numeric'   => 'Số lượng sản phẩm chỉ được nhập số',
             'quantity.min'       => 'Số lượng sản phẩm nhỏ nhất là 1',
             'quantity.required'  => 'Vui lòng nhập số lượng sản phẩm',
+            'image'              => 'Ảnh không hợp lệ'
         ]);
+        if($request->hasFile('image') && $request->file('image')->isValid())
+        {
+            try
+            {
+                $imageName=time().'.'.$request->image->extension();
+                $request->image->move(public_path('/dist/img/product_img'),$imageName);
 
-        DB::table('products')->insert([
-            'name' =>  $request->name,
-            'price' => $request->price,
-            'quantity' => $request->quantity,
-            'status' => 'pending'
-        ]);
-
-        return redirect()->route('product.index')->with('message','Thêm thành công');
+                DB::table('products')->insert([
+                                    'name'       =>  $request->name,
+                                    'price'      =>  $request->price,
+                                    'quantity'   =>  $request->quantity,
+                                    'image'      =>  $imageName,
+                                    'status'     => 'pending'
+                ]);
+                return redirect()->route('product.index')->with('message', 'Thêm thành công');
+            }
+            catch(Exception $ex)
+            {
+                die($ex->getMessage());
+                throw new $ex;
+            }
+        }
+        return back()->with('message', 'Ảnh không hợp lệ');
     }
 
     /**
@@ -117,7 +134,9 @@ class ProductController extends Controller
         $request->validate([
             'name'     => 'required|unique:products,name,' .$id,
             'price'    => 'required|numeric|min:1',
-            'quantity' => 'required|numeric|min:1'
+            'quantity' => 'required|numeric|min:1',
+            'image'    => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+
 
         ],[
             'name.required'      => 'Vui lòng nhập tên sản phẩm',
@@ -128,16 +147,34 @@ class ProductController extends Controller
             'quantity.numeric'   => 'Số lượng sản phẩm chỉ được nhập số',
             'quantity.min'       => 'Số lượng sản phẩm nhỏ nhất là 1',
             'quantity.required'  => 'Vui lòng nhập số lượng sản phẩm',
+            'image'              => 'Ảnh không hợp lệ'
+
         ]);
 
-        $affected = DB::table('products')
-                        ->where('id', $id)
-                        ->update([
-                        'name' =>  $request->name,
-                        'price' => $request->price,
-                        'quantity' => $request->quantity]);
+        if($request->hasFile('image') && $request->file('image')->isValid())
+        {
+            try
+            {
+                $imageName=time().'.'.$request->image->extension();
+                $request->image->move(public_path('dist/img/product_img'),$imageName);
+                $affected = DB::table('products')
+                            ->where('id', $id)
+                            ->update([
+                            'name'      =>  $request->name,
+                            'price'     => $request->price,
+                            'quantity'  => $request->quantity,
+                            'image'     => $imageName
+                            ]);
 
-        return redirect()->route('product.index')->with('message', 'Sửa thành công');
+                return redirect()->route('product.index')->with('message', 'Sửa thành công');
+            }
+            catch(Exception $ex)
+            {
+                die($ex->getMessage());
+                throw new $ex;
+            }
+        }
+        return back()->with('message', 'Ảnh không hợp lệ');
     }
 
     /**
@@ -146,6 +183,7 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function destroy($id)
     {
         //
@@ -196,6 +234,14 @@ class ProductController extends Controller
         }
             return back();
     }
+
+    public function searCustomer(Request $request)
+    {
+        $result=DB::table('products')->where('name', 'like', "%{$request->search}%")->orderBy('id','desc')->simplePaginate(3);
+        return view('products')->with('products', $result);
+    }
+
+
 
 
 }

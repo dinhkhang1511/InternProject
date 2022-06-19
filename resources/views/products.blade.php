@@ -23,7 +23,7 @@
           <table class="table card-table table-responsive table-responsive-large" style="width:100%">
             <thead>
               <tr>
-                <th>ID </th>
+                <th>Sản phẩm </th>
                 <th>Tên sản phẩm</th>
                 <th class="d-none d-md-table-cell">Số lượng</th>
                 <th class="d-none d-md-table-cell">Giá</th>
@@ -34,13 +34,15 @@
             <tbody>
             @foreach($products as $product)
                <tr>
-                <td >{{ $product->id }}</td>
+                <td class="ml-5 d-none d-md-table-cell">
+                    <image style="height:100px; width:100px;" src="{{$product->image ? asset('dist/img/product_img/'). '/' . $product->image : asset('dist/img/product_img/no-image-found.jpg')}}"/>
+                </td>
                 <td >
                   <a class="text-dark" href=""> {{ $product->name }}</a>
                 </td>
                 <td class="d-none d-md-table-cell">{{$product->quantity}}</td>
                 <td class="d-none d-md-table-cell">{{$product->price }} </td>
-                {{-- <td class="d-none d-md-table-cell">$550</td> --}}
+
                 @if($product->status === 'approve')
                     <td>
                         <span class="badge badge-success">{{$product->status}}</span>
@@ -61,16 +63,16 @@
                     <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdown-recent-order2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static"></a>
                     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-recent-order2">
                       <li class="dropdown-item">
-                            <a href="{{route('product.index')}}" class="text-dark">View</a>
+                            <a href="{{route('product.index')}}" class="text-dark">Chi tiết</a>
                       </li>
                       <li class="dropdown-item">
-                        <a href="{{route('product.edit',['product' => $product->id])}}" class="text-dark">Edit</a>
+                        <a href="{{route('product.edit',['product' => $product->id])}}" class="text-dark">Sửa</a>
                       </li>
                       <li class="dropdown-item">
                         <form method="POST" action="{{route('product.destroy',['product' => $product->id])}}">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" onclick="return confirm('Are you sure you want to delete this item?');" class="text-dark">Remove</button>
+                            <button type="submit" onclick="return confirm('Are you sure you want to delete this item?');" class="text-dark">Xóa</button>
                         </form>
                       </li>
                     </ul>

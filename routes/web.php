@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 |
 */
 
+
+
 Route::get('/', function () {
     return redirect()->route('product.index');
 });

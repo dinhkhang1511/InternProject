@@ -43,10 +43,14 @@
                             <input type="number" class="form-control" id="quantity" placeholder="Số lượng" name="quantity" required
                             value="<?= isset($product) ? $product->quantity : '' ?>">
                         </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlPassword">Ảnh </label>
+                            <input type="file" class="form-control" id="image" name="image" required>
+                        </div>
 
                         <div class="form-footer pt-4 pt-5 mt-4 border-top">
-                            <button type="submit" class="btn btn-primary btn-default">Submit</button>
-                            <a type="button" href="{{route('product.index')}}" class="btn btn-secondary btn-default">Cancel</a>
+                            <button type="submit" class="btn btn-primary btn-default">Lưu</button>
+                            <a type="button" href="{{route('product.index')}}" class="btn btn-secondary btn-default">Hủy</a>
                         </div>
                     </form>
                 </div>
