@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-
+use Faker;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         // * Nên tạo 1 seed tên ProductSeeder để tạo dữ liệu mẫu nhưng do có 1 bảng nên em dùng seeder có sẵn
         $products_ = array('Áo thun' , 'Quần jean','Áo sơmi', 'Giày', 'Giày cao gót','Quần short','Áo ba lỗ','Nón');
         $status_ = ['pending','reject','approve'];
+        $faker = Faker\Factory::create();
       //  dd(Arr::random($status_));
         foreach($products_ as $product)
         {
@@ -27,6 +28,8 @@ class DatabaseSeeder extends Seeder
                 'name' => $product,
                 'price' => rand(0, 99999),
                 'quantity' => rand(0, 200),
+                'description' => $faker->text,
+                'image' => '',
                 'status' => Arr::random($status_)
             ]);
         }

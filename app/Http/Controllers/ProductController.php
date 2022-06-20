@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,8 +16,8 @@ class ProductController extends Controller
     public function index()
     {
         //
-        $products = DB::table('products')->orderBy('id', 'desc')->simplePaginate(3);
 
+        $products = DB::table('products')->orderBy('id', 'desc')->simplePaginate(3);
         $approve = DB::table('products')->where('status','approve')->count('*');
         $reject = DB::table('products')->where('status','reject')->count('*');
         $pending = DB::table('products')->where('status','pending')->count('*');
@@ -53,7 +52,8 @@ class ProductController extends Controller
             'name'     => 'unique:products,name|required',
             'price'    => 'required|numeric|min:1',
             'quantity' => 'required|numeric|min:1',
-            'image'    => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'image'    => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'description'    => 'required'
 
         ],[
             'name.required'      => 'Vui lòng nhập tên sản phẩm',
@@ -64,7 +64,8 @@ class ProductController extends Controller
             'quantity.numeric'   => 'Số lượng sản phẩm chỉ được nhập số',
             'quantity.min'       => 'Số lượng sản phẩm nhỏ nhất là 1',
             'quantity.required'  => 'Vui lòng nhập số lượng sản phẩm',
-            'image'              => 'Ảnh không hợp lệ'
+            'image'              => 'Ảnh không hợp lệ',
+            'description'        => 'Vui lòng nhập mô tả'
         ]);
         if($request->hasFile('image') && $request->file('image')->isValid())
         {
@@ -74,11 +75,13 @@ class ProductController extends Controller
                 $request->image->move(public_path('/dist/img/product_img'),$imageName);
 
                 DB::table('products')->insert([
-                                    'name'       =>  $request->name,
-                                    'price'      =>  $request->price,
-                                    'quantity'   =>  $request->quantity,
-                                    'image'      =>  $imageName,
-                                    'status'     => 'pending'
+                            'name'       =>  $request->name,
+                            'price'      =>  $request->price,
+                            'quantity'   =>  $request->quantity,
+                            'image'      =>  $imageName,
+                            'status'     => 'pending',
+                            'description'=> $request->description
+
                 ]);
                 return redirect()->route('product.index')->with('message', 'Thêm thành công');
             }
@@ -132,11 +135,11 @@ class ProductController extends Controller
     {
         //
         $request->validate([
-            'name'     => 'required|unique:products,name,' .$id,
-            'price'    => 'required|numeric|min:1',
-            'quantity' => 'required|numeric|min:1',
-            'image'    => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
-
+            'name'          => 'required|unique:products,name,' .$id,
+            'price'         => 'required|numeric|min:1',
+            'quantity'      => 'required|numeric|min:1',
+            'image'         => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'description'   => 'required'
 
         ],[
             'name.required'      => 'Vui lòng nhập tên sản phẩm',
@@ -147,7 +150,8 @@ class ProductController extends Controller
             'quantity.numeric'   => 'Số lượng sản phẩm chỉ được nhập số',
             'quantity.min'       => 'Số lượng sản phẩm nhỏ nhất là 1',
             'quantity.required'  => 'Vui lòng nhập số lượng sản phẩm',
-            'image'              => 'Ảnh không hợp lệ'
+            'image'              => 'Ảnh không hợp lệ',
+            'description'        => 'Vui lòng nhập mô tả'
 
         ]);
 
@@ -160,10 +164,11 @@ class ProductController extends Controller
                 $affected = DB::table('products')
                             ->where('id', $id)
                             ->update([
-                            'name'      =>  $request->name,
-                            'price'     => $request->price,
-                            'quantity'  => $request->quantity,
-                            'image'     => $imageName
+                            'name'          => $request->name,
+                            'price'         => $request->price,
+                            'quantity'      => $request->quantity,
+                            'image'         => $imageName,
+                            'description'   => $request->description
                             ]);
 
                 return redirect()->route('product.index')->with('message', 'Sửa thành công');
@@ -235,13 +240,17 @@ class ProductController extends Controller
             return back();
     }
 
-    public function searCustomer(Request $request)
+    public function searchProduct(Request $request)
     {
         $result=DB::table('products')->where('name', 'like', "%{$request->search}%")->orderBy('id','desc')->simplePaginate(3);
-        return view('products')->with('products', $result);
+        $approve = DB::table('products')->where('status','approve')->count('*');
+        $reject = DB::table('products')->where('status','reject')->count('*');
+        $pending = DB::table('products')->where('status','pending')->count('*');
+
+        $result->appends(['search' => $request->search]);
+        return view('products')->with(['products' => $result,
+                                        'approve' => $approve,
+                                        'reject' => $reject,
+                                        'pending' => $pending]);
     }
-
-
-
-
 }

@@ -20,7 +20,7 @@
                     <form method="POST" enctype="multipart/form-data" action="<?= isset($product) ? route('product.update',['product' => $product->id]) : route('product.store') ?>" >
                         @csrf
                         @if(isset($product))
-                            @method('PUT');
+                            @method('PUT')
                         @endif
                         @if($errors->any())
                             @foreach($errors->all() as $error)
@@ -30,18 +30,23 @@
                         <div class="form-group">
                             <label for="exampleFormControlInput1">Tên sản phẩm</label>
                             <input type="text" class="form-control" id="name" placeholder="Tên sản phẩm" name='name' required
-                            value="<?= isset($product) ? $product->name : '' ?>">
+                            value="<?= isset($product->name) ? $product->name : '' ?>">
                         </div>
-
+                        <div class="form-group">
+                            <label for="exampleFormControlInput1">Mô tả</label>
+                            <textarea type="text" class="form-control" id="description" placeholder="Tên sản phẩm" name="description" required>
+                                <?= isset($product->description) ? $product->description : '' ?>
+                            </textarea>
+                        </div>
                         <div class="form-group">
                             <label for="exampleFormControlPassword">Giá </label>
                             <input type="number" class="form-control" id="price" placeholder="Giá" name="price" required
-                            value="<?= isset($product) ? $product->price : '' ?>">
+                            value="<?= isset($product->price) ? $product->price : '' ?>">
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlPassword">Số lượng </label>
                             <input type="number" class="form-control" id="quantity" placeholder="Số lượng" name="quantity" required
-                            value="<?= isset($product) ? $product->quantity : '' ?>">
+                            value="<?= isset($product->quantity) ? $product->quantity : '' ?>">
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlPassword">Ảnh </label>

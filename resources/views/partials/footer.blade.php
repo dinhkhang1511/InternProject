@@ -27,5 +27,13 @@
 <script src="{{asset('dist/js/sleek.js')}}"></script>
 <script src="{{asset('dist/js/custom.js')}}"></script>
 
+<script>
+    $("#search").keydown(function(e){
+        if (e.keyCode == 13) {
+                $(".btn-search").click();
+        }
+});
+</script>
+
   </body>
 </html>

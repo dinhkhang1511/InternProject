@@ -27,3 +27,4 @@ Route::resource('product', ProductController::class);
 Route::POST('approve', [ProductController::class,'approveProduct'])->name('approve');
 
 Route::get('product/status/{status}',[ProductController::class,'showByStatus'])->name('status');
+Route::get('search',[ProductController::class,'searchProduct'])->name('search');
