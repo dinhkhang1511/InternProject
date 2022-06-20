@@ -240,7 +240,7 @@
                       </li>
 
                       <li class="dropdown-footer">
-                        <a href="logout"> <i class="mdi mdi-logout"></i> Log Out </a>
+                        <a href="#"> <i class="mdi mdi-logout"></i> Log Out </a>
                       </li>
                     </ul>
                   </li>
