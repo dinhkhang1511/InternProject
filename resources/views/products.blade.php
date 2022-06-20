@@ -67,7 +67,7 @@
                             <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdown-recent-order2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static"></a>
                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-recent-order2">
                             <li class="dropdown-item">
-                                    <a href="{{route('product.index')}}" class="text-dark">Chi tiết</a>
+                                    <a href="{{route('product.show',['product' => $product->id])}}" class="text-dark">Chi tiết</a>
                             </li>
                             <li class="dropdown-item">
                                 <a href="{{route('product.edit',['product' => $product->id])}}" class="text-dark">Sửa</a>

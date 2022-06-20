@@ -17,6 +17,23 @@
         var year = d.getFullYear();
         document.getElementById("copy-year").innerHTML = year;
     </script>
+
+    <script>
+        function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#image-preview')
+                    .attr('src', e.target.result)
+                    .width(150)
+                    .height(150);
+
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    };
+    </script>
   </footer>
 
 </div>

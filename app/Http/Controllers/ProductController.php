@@ -64,7 +64,7 @@ class ProductController extends Controller
             'quantity.numeric'   => 'Số lượng sản phẩm chỉ được nhập số',
             'quantity.min'       => 'Số lượng sản phẩm nhỏ nhất là 1',
             'quantity.required'  => 'Vui lòng nhập số lượng sản phẩm',
-            'image'              => 'Ảnh không hợp lệ',
+            'image.*'              => 'Ảnh không hợp lệ',
             'description'        => 'Vui lòng nhập mô tả'
         ]);
         if($request->hasFile('image') && $request->file('image')->isValid())
@@ -108,6 +108,11 @@ class ProductController extends Controller
             $products =  DB::table('products')->where('status','pending')->orderBy('id','desc')->simplePaginate(3);
             return view('approve')->with('products', $products);
         }
+        else
+        {
+            $product =  DB::table('products')->find($id);
+            return view('detail_product')->with('product', $product);
+        }
     }
 
     /**
@@ -138,7 +143,7 @@ class ProductController extends Controller
             'name'          => 'required|unique:products,name,' .$id,
             'price'         => 'required|numeric|min:1',
             'quantity'      => 'required|numeric|min:1',
-            'image'         => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image'         => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'description'   => 'required'
 
         ],[
@@ -150,7 +155,7 @@ class ProductController extends Controller
             'quantity.numeric'   => 'Số lượng sản phẩm chỉ được nhập số',
             'quantity.min'       => 'Số lượng sản phẩm nhỏ nhất là 1',
             'quantity.required'  => 'Vui lòng nhập số lượng sản phẩm',
-            'image'              => 'Ảnh không hợp lệ',
+            'image.*'            => 'Ảnh không hợp lệ',
             'description'        => 'Vui lòng nhập mô tả'
 
         ]);
@@ -178,6 +183,19 @@ class ProductController extends Controller
                 die($ex->getMessage());
                 throw new $ex;
             }
+        }
+        else
+        {
+            $affected = DB::table('products')
+                            ->where('id', $id)
+                            ->update([
+                            'name'          => $request->name,
+                            'price'         => $request->price,
+                            'quantity'      => $request->quantity,
+                            'description'   => $request->description
+                            ]);
+
+            return redirect()->route('product.index')->with('message', 'Sửa thành công');
         }
         return back()->with('message', 'Ảnh không hợp lệ');
     }

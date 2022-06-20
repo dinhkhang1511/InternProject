@@ -34,7 +34,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlInput1">Mô tả</label>
-                            <textarea type="text" class="form-control" id="description" placeholder="Tên sản phẩm" name="description" required>
+                            <textarea type="text" class="form-control" id="description" rows="4" placeholder="Tên sản phẩm" name="description" required>
                                 <?= isset($product->description) ? $product->description : '' ?>
                             </textarea>
                         </div>
@@ -50,7 +50,8 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlPassword">Ảnh </label>
-                            <input type="file" class="form-control" id="image" name="image" required>
+                            <input type="file" class="form-control" onchange="readURL(this)" id="image" name="image">
+                            <img id="image-preview">
                         </div>
 
                         <div class="form-footer pt-4 pt-5 mt-4 border-top">

@@ -22,7 +22,7 @@ Route::get('/', function () {
     return redirect()->route('product.index');
 });
 
-
+Route::view('/test', 'detail_product');
 Route::resource('product', ProductController::class);
 Route::POST('approve', [ProductController::class,'approveProduct'])->name('approve');
 
