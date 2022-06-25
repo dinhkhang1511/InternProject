@@ -49,7 +49,7 @@ class BackupDatabase extends Command
             while(true)
             {
                 // * mỗi vòng lặp lấy 100 products bỏ vào file csv sau đó truy vấn tới 100 products tiếp theo và lặp lại
-                $products = DB::table('productsss')->orderBy('id')->where('id','>',$id)->limit(100)->get();
+                $products = DB::table('products')->orderBy('id')->where('id','>',$id)->limit(100)->get();
                 if($products->count() == 0)
                     break;
                     $file = fopen(storage_path('backup/'.date('d-m-Y')."-$i-backup.csv"),'w');
@@ -72,7 +72,7 @@ class BackupDatabase extends Command
         }catch(Exception $ex)
         {
             $this->error("Something went wrong!");
-            throw new $ex;
+            throw new $ex; // ! ghi lỗi vào file log nhưng vẫn hiện ra ngoài màn hình
         }
     }
 }
