@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -38,35 +39,40 @@ class BackupDatabase extends Command
      */
     public function handle()
     {
-        DB::table('products')->orderBy('id')->chunk('100',function($products,$i=1){
-            $columns = array('id','name','price','quantity','description');
-            $file = fopen(storage_path('backup/'.date('d-m-Y')."-$i-backup.csv"),'w');
-            fputcsv($file,$columns);
-            foreach($products as $product)
+        $i = 1;
+        $id = 1;
+        $columns = array('id','name','price','quantity','description');
+        $this->info("Exporting products...");
+        try
+        {
+
+            while(true)
             {
-                $row['id'] = $product->id;
-                $row['name'] = $product->name;
-                $row['price'] = $product->price;
-                $row['quantity'] = $product->quantity;
-                $row['description'] = $product->description;
-                fputcsv($file,array($row['id'],$row['name'],$row['price'],$row['quantity'],$row['description']));
+                // * mỗi vòng lặp lấy 100 products bỏ vào file csv sau đó truy vấn tới 100 products tiếp theo và lặp lại
+                $products = DB::table('productsss')->orderBy('id')->where('id','>',$id)->limit(100)->get();
+                if($products->count() == 0)
+                    break;
+                    $file = fopen(storage_path('backup/'.date('d-m-Y')."-$i-backup.csv"),'w');
+                    fputcsv($file,$columns);
+                    foreach($products as $product)
+                    {
+                        $row['id'] = $product->id;
+                        $row['name'] = $product->name;
+                        $row['price'] = $product->price;
+                        $row['quantity'] = $product->quantity;
+                        $row['description'] = $product->description;
+                        fputcsv($file,array($row['id'],$row['name'],$row['price'],$row['quantity'],$row['description']));
+                        $id = $product->id;
+                    }
+                    fclose($file);
+                    $i++;
             }
-            fclose($file);
-            $i++;
-        });
-
-        // echo "Getting products...\n";
-        // $products = $products->toArray();
-        // echo "Saving products...\n";
-        // file_put_contents(storage_path('backup.txt'),json_encode($products));
-        // echo "Command Successful\n";
-
-        // $headers = array(
-        //     "Content-type"         => "text/csv",
-        //     "Content-Disposition"  => "attachment; filename=backup.csv",
-        //     "Pragma"               => "no-cache",
-        //     "Cache-Control"        => "must-revalidate, post-check=0, pre-check=0",
-        //     "Expires"              => "0");
-
+            sleep(1);
+            $this->info("Export successful!");
+        }catch(Exception $ex)
+        {
+            $this->error("Something went wrong!");
+            throw new $ex;
+        }
     }
 }
