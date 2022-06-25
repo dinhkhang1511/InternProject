@@ -19,7 +19,10 @@ use Illuminate\Support\Facades\DB;
 
 
 Route::get('/', function () {
-    return redirect()->route('product.index');
+    // return redirect()->route('product.index');
+    $html = file_get_contents('https://dantri.com.vn');
+    dd($html);
+
 });
 
 
