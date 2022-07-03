@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShopifyController;
+use App\Models\Shop;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -19,10 +21,7 @@ use Illuminate\Support\Facades\DB;
 
 
 Route::get('/', function () {
-    // return redirect()->route('product.index');
-    $html = file_get_contents('https://dantri.com.vn');
-    dd($html);
-
+    return redirect()->route('product.index');
 });
 
 
@@ -31,3 +30,13 @@ Route::POST('approve', [ProductController::class,'approveProduct'])->name('appro
 
 Route::get('product/status/{status}',[ProductController::class,'showByStatus'])->name('status');
 Route::get('search',[ProductController::class,'searchProduct'])->name('search');
+
+Route::prefix('shopify')->group(function (){
+    Route::get('/',[ShopifyController::class,'getShopInput']);
+    Route::get('/install',[ShopifyController::class,'installApp'])->name('installApp');
+    Route::post('/shop',[ShopifyController::class,'postShopInput'])->name('shopify');
+
+    Route::get('/url',[ShopifyController::class,'generateCode'])->name('url');
+
+});
+
