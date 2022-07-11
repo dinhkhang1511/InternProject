@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Product;
+use App\Models\Shop;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,19 +16,18 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-
-        $products = DB::table('products')->orderBy('id', 'desc')->simplePaginate(3);
-        $approve = DB::table('products')->where('status','approve')->count('*');
-        $reject = DB::table('products')->where('status','reject')->count('*');
-        $pending = DB::table('products')->where('status','pending')->count('*');
-
-        return view('products')->with(['products' => $products,
-                                       'approve' => $approve,
-                                       'reject' => $reject,
-                                       'pending' => $pending]);
+        $token = $request->get('access_token');
+        $shop = Shop::where('access_token',$token)->first();
+        if($shop)
+        {
+            $products = Product::where('shop_id',$shop->id)->simplePaginate(5);
+            return view('products')->with('products',$products);
+        }
+        else
+            return redirect()->route('shopify');
     }
 
     /**
@@ -48,25 +50,25 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         //
-        $request->validate([
-            'name'     => 'unique:products,name|required',
-            'price'    => 'required|numeric|min:1',
-            'quantity' => 'required|numeric|min:1',
-            'image'    => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'description'    => 'required'
+        // $request->validate([
+        //     'name'     => 'unique:products,name|required',
+        //     'price'    => 'required|numeric|min:1',
+        //     'quantity' => 'required|numeric|min:1',
+        //     'image'    => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        //     'description'    => 'required'
 
-        ],[
-            'name.required'      => 'Vui lòng nhập tên sản phẩm',
-            'name.unique'        => 'Tên sản phẩm đã tồn tại',
-            'price.required'     => 'Vui lòng nhập giá sản phẩm',
-            'price.numeric'      => 'Giá sản phẩm chỉ được nhập số',
-            'price.min'          => 'Giá sản phẩm nhỏ nhất là 1',
-            'quantity.numeric'   => 'Số lượng sản phẩm chỉ được nhập số',
-            'quantity.min'       => 'Số lượng sản phẩm nhỏ nhất là 1',
-            'quantity.required'  => 'Vui lòng nhập số lượng sản phẩm',
-            'image'              => 'Ảnh không hợp lệ',
-            'description'        => 'Vui lòng nhập mô tả'
-        ]);
+        // ],[
+        //     'name.required'      => 'Vui lòng nhập tên sản phẩm',
+        //     'name.unique'        => 'Tên sản phẩm đã tồn tại',
+        //     'price.required'     => 'Vui lòng nhập giá sản phẩm',
+        //     'price.numeric'      => 'Giá sản phẩm chỉ được nhập số',
+        //     'price.min'          => 'Giá sản phẩm nhỏ nhất là 1',
+        //     'quantity.numeric'   => 'Số lượng sản phẩm chỉ được nhập số',
+        //     'quantity.min'       => 'Số lượng sản phẩm nhỏ nhất là 1',
+        //     'quantity.required'  => 'Vui lòng nhập số lượng sản phẩm',
+        //     'image'              => 'Ảnh không hợp lệ',
+        //     'description'        => 'Vui lòng nhập mô tả'
+        // ]);
         if($request->hasFile('image') && $request->file('image')->isValid())
         {
             try
@@ -74,14 +76,14 @@ class ProductController extends Controller
                 $imageName=time().'.'.$request->image->extension();
                 $request->image->move(public_path('/dist/img/product_img'),$imageName);
 
-                DB::table('products')->insert([
+                Product::insert([
                             'name'       =>  $request->name,
                             'price'      =>  $request->price,
                             'quantity'   =>  $request->quantity,
                             'image'      =>  $imageName,
-                            'status'     => 'pending',
-                            'description'=> $request->description
-
+                            'status'     =>  'pending',
+                            'description'=>  $request->description,
+                            'shop_id'    =>  $request->shop_id
                 ]);
                 return redirect()->route('product.index')->with('message', 'Thêm thành công');
             }

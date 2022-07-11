@@ -91,13 +91,13 @@
                       <span class="nav-text">{{strpos($currentUrl,'edit') != 0 ? 'Sửa sản phẩm' : 'Thêm Sản phẩm'}}</span> <b class="caret"></b>
                     </a>
                   </li>
-                  <li  class="{{strpos($currentUrl,'approval') != 0 ? 'active expand' : ''}}" >
+                  {{-- <li  class="{{strpos($currentUrl,'approval') != 0 ? 'active expand' : ''}}" >
                     <a class=" sidenav-item-link" href="{{strpos($currentUrl,'approval') != 0 ? '#' : route('product.index').'/approval'}}"
                       aria-expanded="false" aria-controls="dashboard">
                       <i class="mdi mdi-view-dashboard-outline"></i>
                       <span class="nav-text">Duyệt sản phẩm</span> <b class="caret"></b>
                     </a>
-                  </li>
+                  </li> --}}
               </ul>
             </div>
             <hr class="separator" />
@@ -240,7 +240,7 @@
                       </li>
 
                       <li class="dropdown-footer">
-                        <a href="#"> <i class="mdi mdi-logout"></i> Log Out </a>
+                        <a href="{{route('logout')}}"> <i class="mdi mdi-logout"></i> Log Out </a>
                       </li>
                     </ul>
                   </li>

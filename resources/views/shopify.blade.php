@@ -41,7 +41,7 @@
                 <h2>Basic Shop App</h2>
             </div>
             <div class="card-body">
-                <form action="{{route('shopify')}}" method="POST" target="_blank">
+                <form action="{{route('shopify')}}" method="POST" >
                     @csrf
                     <div class="form-group">
                         <label for="exampleFormControlInput1">Tên shop</label>
