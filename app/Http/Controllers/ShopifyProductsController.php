@@ -177,16 +177,16 @@ class ShopifyProductsController extends Controller
             [
                 "product" => [
                     "title" => $request->name,
-                    // "body_html" => $request->description,
-                    // "vendor"    => $shop->name,
-                    // "variants"  => [['price'              => $request->price,
-                    //                  'inventory_quantity' => $request->quantity]]
+                    "body_html" => $request->description,
+                    "vendor"    => $shop->name,
+                    "variants"  => [['price'              => $request->price,
+                                     'inventory_quantity' => $request->quantity]]
                 ]
         ];
         if($request->hasFile('image'))
         {
             $encode_image = base64_encode(file_get_contents($request->file('image')));
-            $body['image'] = [[
+            $body['product']['images'] = [[
                             'filename' => $request->file('image')->getClientOriginalName(),
                             'attachment' => $encode_image]];
         }

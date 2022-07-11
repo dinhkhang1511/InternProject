@@ -45,7 +45,6 @@ class WebhookProductCreate implements ShouldQueue
         $product = $this->data;
         $shop = Shop::where('domain',$this->shop_name)->first();
         $data = [
-
             'name'          => $product['title'],
             'description'   => $product['body_html'],
             'price'         => $product['variants']['0']['price'],

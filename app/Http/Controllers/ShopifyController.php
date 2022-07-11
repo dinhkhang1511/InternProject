@@ -158,7 +158,7 @@ class ShopifyController extends Controller
         }
     }
 
-    public function callGraphQL()
+    public function callGraphQL() // Test graphQL
     {
         $shopify_domain = 'luongdinhkhang.myshopify.com';
         $clientKey = env('API_SHOPIFY_KEY');
