@@ -28,20 +28,20 @@ use Illuminate\Support\Facades\Log;
 */
 
 
+//* old project ----------------------------------------------------
+// Route::get('/', function () {
+//     return redirect()->route('product.index');
+// });
+// Route::resource('product', ProductController::class);
+// Route::POST('approve', [ProductController::class,'approveProduct'])->name('approve');
+// Route::get('product/status/{status}',[ProductController::class,'showByStatus'])->name('status');
+// Route::get('search',[ProductController::class,'searchProduct'])->name('search');
+//* old project ----------------------------------------------------
 
-Route::get('/', function () {
-    return redirect()->route('product.index');
-});
 
-
-Route::resource('product', ProductController::class);
-Route::POST('approve', [ProductController::class,'approveProduct'])->name('approve');
-
-Route::get('product/status/{status}',[ProductController::class,'showByStatus'])->name('status');
-Route::get('search',[ProductController::class,'searchProduct'])->name('search');
 
 Route::get('graph',[ShopifyController::class,'callGraphQL'])->name('graphQL');
-
+Route::get('/',[ShopifyController::class,'getShopInput'])->name('shopify');
 Route::prefix('shopify')->group(function (){
     Route::get('/',[ShopifyController::class,'getShopInput'])->name('shopify');
     Route::get('/install',[ShopifyController::class,'installApp'])->name('installApp');
@@ -50,18 +50,14 @@ Route::prefix('shopify')->group(function (){
 
     Route::get('/logout',[ShopifyController::class,'logout'])->name('logout');
 
-
     Route::prefix('/webhook')->group(function(){
         Route::post('/products/create', [WebhookController::class,'productCreate']);
         Route::post('/products/update', [WebhookController::class,'productUpdate']);
         Route::post('/products/delete', [WebhookController::class,'productDelete']);
-
     });
-
-
 });
-
 Route::resource('shopifyProduct', ShopifyProductsController::class)->middleware('verifiedShop');
+
 
 
 //* -------------------------------------Test--------------------------------------------------------------

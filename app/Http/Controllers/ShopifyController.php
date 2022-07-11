@@ -160,13 +160,12 @@ class ShopifyController extends Controller
 
     public function callGraphQL() // Test graphQL
     {
-        $shopify_domain = 'luongdinhkhang.myshopify.com';
-        $clientKey = env('API_SHOPIFY_KEY');
-        $clientSecret = env('API_SECRET_SHOPIFY_KEY');
-
+        $shop = session('shop');
+        $shopify_domain = $shop->shopify_domain;
+        $id = Product::where('shop_id',$shop->id)->first()->id;
         $query = <<<QUERY
         {
-            product(id: "gid://shopify/Product/7769630212309")
+            product(id: "gid://shopify/Product/$id")
             {
               title
               description
@@ -176,7 +175,7 @@ class ShopifyController extends Controller
       QUERY;
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'X-Shopify-Access-Token' => "shpua_f3f7de3ded421917a7e3d462778629a7"
+            'X-Shopify-Access-Token' => $shop->access_token
         ],)->post("https://$shopify_domain/admin/api/2022-04/graphql.json", [
             'query' =>  $query]);
         if($response->successful())

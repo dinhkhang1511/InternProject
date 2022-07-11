@@ -21,4 +21,5 @@ Hướng dẫn sử dụng:
 + Vào ShopifyController->registerWebhook() thay biến $ngrok_url bằng ngrok vừa start.
 + Vào partner phần app setup thay url app và url redirect bằng url ngrok vừa start 
 + Vào port vừa đc start bằng artisan serve để vào web ('http://127.0.0.1:8000/shopify')
++ Nhập lệnh 'php artisan queue:work' để chạy queue. 
 + Nhập tên store đc tạo trong app shopify để xác thực và sử dụng

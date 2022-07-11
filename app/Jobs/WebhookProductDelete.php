@@ -23,10 +23,11 @@ class WebhookProductDelete implements ShouldQueue
 
     private $data;
 
-    public function __construct($data)
+    public function __construct($data,$id)
     {
         //
         $this->data = $data;
+        $this->id = $id;
     }
 
     /**
