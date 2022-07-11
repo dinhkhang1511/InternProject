@@ -1,5 +1,7 @@
 @include('partials.header')
-
+@php
+$shop = session('shop');
+@endphp
   <div class="row">
     <div class="col-12">
       <!-- Recent Order Table -->
@@ -43,7 +45,7 @@
                             <img style="height:100px; width:100px;" src="{{$product->image ? $product->image : asset('dist/img/product_img/no-image-found.jpg')}}"/>
                         </td>
                         <td >
-                        <a class="text-dark" href=""> {{ $product->name }}</a>
+                        <a class="text-dark" href="{{"https://$shop->shopify_domain/admin/products/$product->id"}}"> {{ $product->name }}</a>
                         </td>
                         <td class="d-none d-md-table-cell">{!!$product->description!!}</td>
                         <td class="d-none d-md-table-cell">{{$product->quantity}}</td>

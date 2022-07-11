@@ -54,12 +54,13 @@ $shop = session('shop');
                         </div>
                         <div class="form-group">
                             <label for="exampleFormControlPassword">Ảnh </label>
-                            <input type="file" class="form-control" id="image" name="image">
+                            <input type="file" class="form-control" id="image" onchange="readURL(this)" name="image">
+                            <img id="image-preview" src="{{isset($product->image) ? $product->image : ''}}" style="width: 150px; height: 150px">
                         </div>
 
                         <div class="form-footer pt-4 pt-5 mt-4 border-top">
                             <button type="submit" class="btn btn-primary btn-default">Lưu</button>
-                            <a type="button" href="{{route('product.index')}}" class="btn btn-secondary btn-default">Hủy</a>
+                            <a type="button" href="{{route('shopifyProduct.index')}}" class="btn btn-secondary btn-default">Hủy</a>
                         </div>
                     </form>
                 </div>

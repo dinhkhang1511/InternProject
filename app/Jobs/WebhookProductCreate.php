@@ -52,9 +52,9 @@ class WebhookProductCreate implements ShouldQueue
             'status'        => $product['status'],
             'shop_id'       => $shop->id
         ];
-        if(isset($product->image) && !empty($product->image)) // Nếu sản phẩm có hình thì thêm hình
+        if(isset($product['image']) && !empty($product['image'])) // Nếu sản phẩm có hình thì thêm hình
         {
-            $data['image'] = $product->image->src;
+            $data['image'] = $product['image']['src'];
         }
         Product::updateOrCreate(['id' => $product['id']],$data); // Update or create
         dump($data);

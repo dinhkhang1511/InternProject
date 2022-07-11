@@ -150,7 +150,7 @@ class ShopifyController extends Controller
                 }
                     Product::updateOrCreate(['id' => $product->id,],$data);
             }
-            return redirect()->route('product.index');
+            return redirect()->route('shopifyProduct.index');
         }
         else
         {

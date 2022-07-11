@@ -141,7 +141,7 @@
               <!-- search form -->
               <div class="search-form d-none d-lg-inline-block">
                 <div class="input-group">
-                    <form action="{{route('search')}}" method="GET">
+                    <form action="#" method="GET">
                         <div class="input-group">
                             <button type="submit" name="search" id="search-btn" class="btn btn-flat">
                             <i class="mdi mdi-magnify"></i>

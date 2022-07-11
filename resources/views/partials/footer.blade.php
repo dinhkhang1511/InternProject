@@ -22,18 +22,24 @@
 </div>
 </div>
 
+<script>
+    function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('#image-preview')
+                .attr('src', e.target.result)
+                .width(150)
+                .height(150);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+};
+</script>
+
 <script src="{{asset('dist/js/jquery.min.js')}}"></script>
 <script src="{{asset('dist/js/bootstrap.bundle.min.js')}}"></script>
 <script src="{{asset('dist/js/sleek.js')}}"></script>
 <script src="{{asset('dist/js/custom.js')}}"></script>
-
-<script>
-    $("#search").keydown(function(e){
-        if (e.keyCode == 13) {
-                $(".btn-search").click();
-        }
-});
-</script>
-
   </body>
 </html>
