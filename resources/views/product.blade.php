@@ -55,7 +55,11 @@ $shop = session('shop');
                         <div class="form-group">
                             <label for="exampleFormControlPassword">Ảnh </label>
                             <input type="file" class="form-control" id="image" onchange="readURL(this)" name="image">
-                            <img id="image-preview" src="{{isset($product->image) ? $product->image : ''}}" style="width: 150px; height: 150px">
+                            @if(isset($product->image))
+                            <img id="image-preview" class="image" src="{{$product->image}}" style="width: 150px; height: 150px">
+                            @else
+                            <img id="image-preview" class="image">
+                            @endif
                         </div>
 
                         <div class="form-footer pt-4 pt-5 mt-4 border-top">

@@ -45,7 +45,7 @@ $shop = session('shop');
                             <img style="height:100px; width:100px;" src="{{$product->image ? $product->image : asset('dist/img/product_img/no-image-found.jpg')}}"/>
                         </td>
                         <td >
-                        <a class="text-dark" href="{{"https://$shop->shopify_domain/admin/products/$product->id"}}"> {{ $product->name }}</a>
+                        <a class="text-dark" href="{{"https://$shop->shopify_domain/admin/products/$product->id"}}" target="_blank"> {{ $product->name }}</a>
                         </td>
                         <td class="d-none d-md-table-cell">{!!$product->description!!}</td>
                         <td class="d-none d-md-table-cell">{{$product->quantity}}</td>
@@ -65,9 +65,6 @@ $shop = session('shop');
                         <div class="dropdown show d-inline-block widget-dropdown">
                             <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdown-recent-order2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static"></a>
                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-recent-order2">
-                            <li class="dropdown-item">
-                                    <a href="{{route('shopifyProduct.index')}}" class="text-dark">Chi tiết</a>
-                            </li>
                             <li class="dropdown-item">
                                 <a href="{{route('shopifyProduct.edit',['shopifyProduct' => $product->id])}}" class="text-dark">Sửa</a>
                             </li>

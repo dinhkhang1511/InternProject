@@ -12,6 +12,17 @@ use Illuminate\Support\Facades\Log;
 class ShopifyController extends Controller
 {
     //
+    private  $version;
+    private  $ngrok_url;
+
+    /**
+     * Class constructor.
+     */
+    public function __construct()
+    {
+        $this->version = config('shopify.shopify_api_version');
+        $this->ngrok_url = config('shopify.ngrok_url');
+    }
 
     public function getShopInput()
     {
@@ -79,6 +90,7 @@ class ShopifyController extends Controller
         $shop->email          = $payload->customer_email;
         $shop->access_token   = $access_token;
         $shop->plan           = $payload->plan_display_name;
+        $shop->created_at     = $payload->created_at;
         $shop->save();
         // todo: lưu shop vào session -> redirect quản lý product -> middleware check session shop
         session()->put('shop',$shop); // Lưu access token vào session;
@@ -107,8 +119,8 @@ class ShopifyController extends Controller
     {
         $response = Http::withHeaders([
             'X-Shopify-Access-Token' => $access_token
-        ],)->get("https://$shopifyDomain/admin/api/2022-04/shop.json", [
-            'fields' =>  'id,name,customer_email,domain,plan_display_name']);
+        ],)->get("https://$shopifyDomain/admin/api/$this->version/shop.json", [
+            'fields' =>  'id,name,customer_email,domain,plan_display_name,created_at']);
         if($response->successful())
             return json_decode($response->getBody())->shop;
         else
@@ -129,7 +141,7 @@ class ShopifyController extends Controller
 
         $response = Http::withHeaders([
             'X-Shopify-Access-Token' => $access_token
-        ],)->get("https://$shopifyDomain/admin/api/2022-07/products.json", [
+        ],)->get("https://$shopifyDomain/admin/api/$this->version/products.json", [
             'fields' =>  $fields]);
         if($response->successful())
         {
@@ -176,7 +188,7 @@ class ShopifyController extends Controller
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
             'X-Shopify-Access-Token' => $shop->access_token
-        ],)->post("https://$shopify_domain/admin/api/2022-04/graphql.json", [
+        ],)->post("https://$shopify_domain/admin/api/$this->version/graphql.json", [
             'query' =>  $query]);
         if($response->successful())
         {
@@ -205,8 +217,8 @@ class ShopifyController extends Controller
 
     public function registerWebhook($shopName,$access_token,$topics)
     {
-        $url = "https://$shopName.myshopify.com/admin/api/2022-07/webhooks.json";
-        $ngrok_url = 'https://dfa8-113-161-32-170.ap.ngrok.io'; // ! Thay đổi mỗi lần start nrgok
+        $url = "https://$shopName.myshopify.com/admin/api/$this->version/webhooks.json";
+        $ngrok_url = $this->ngrok_url; // ! Thay đổi mỗi lần start nrgok trong file config shopify.php
         foreach($topics as $topic)
         {
             $headers=[
@@ -232,6 +244,50 @@ class ShopifyController extends Controller
                     $response->throw();
             }catch(Exception $ex){}
         }
+    }
+
+    public function destroy()
+    {
+        $shop = Shop::where('name','luongdinhkhang')->first();
+        $this->destroyAllWebhook($shop->name,$shop->access_token);
+    }
+
+    public function destroyAllWebhook($shopName,$access_token) // test only
+    {
+        $url = "https://$shopName.myshopify.com/admin/api/$this->version/webhooks.json";
+        $headers=[
+            "X-Shopify-Access-Token"    => $access_token,
+            "Content-Type"              => "application/json"
+        ];
+        $response = Http::withHeaders($headers)->get($url);
+        if($response->successful())
+        {
+            $webhooks = json_decode($response->getBody()->getContents())->webhooks;
+            foreach($webhooks as $webhook)
+            {
+            $headers=[
+                        "X-Shopify-Access-Token"    => $access_token,
+                        "Content-Type"  => "application/json"
+            ];
+            // try //dùng để test install app lại mà ko cần phải xóa webhook cũ nếu bỏ cmt chạy sẽ ko bị lỗi topic already taken
+
+            // {https://luongdinhkhang.myshopify.com/admin/api/2022-04/webhooks/1149185163477.json
+                $url = "https://$shopName.myshopify.com/admin/api/$this->version/webhooks/$webhook->id.json";
+                $response = Http::withHeaders($headers)->delete($url);
+                if($response->successful())
+                {
+                    Log::info('Deleted Webhook: ');
+                    dump($webhook->id);
+                }else
+                    $response->throw();
+            // }
+            // catch(Exception $ex){}
+            }
+        }else
+            $response->throw();
+
+
+
     }
 }
 

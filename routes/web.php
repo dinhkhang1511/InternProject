@@ -5,6 +5,7 @@ use App\Http\Controllers\ShopifyController;
 use App\Http\Controllers\ShopifyProductsController;
 use App\Http\Controllers\WebhookController;
 use App\Jobs\WebhookProductCreate;
+use App\Models\Product;
 use App\Models\Shop;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request as Psr7Request;
@@ -40,7 +41,6 @@ use Illuminate\Support\Facades\Log;
 
 
 
-Route::get('graph',[ShopifyController::class,'callGraphQL'])->name('graphQL');
 Route::get('/',[ShopifyController::class,'getShopInput'])->name('shopify');
 Route::prefix('shopify')->group(function (){
     Route::get('/',[ShopifyController::class,'getShopInput'])->name('shopify');
@@ -64,35 +64,9 @@ Route::resource('shopifyProduct', ShopifyProductsController::class)->middleware(
 Route::get('/session',function(Request &$request) // Test session
 {
     // $request->session()->forget('shop');
-    $shop = session('shop');
-    dump($shop);
+    // $shop = session('shop');
+    // dump($shop);
 })->name('session');
 
-Route::get('/test',function() // Test session
-{
-    if(Shop::find(65148256469))
-        dd('true');
-    else
-        dd('false');
-});
-
-Route::get('hay',function(){
-//     $client = new Client();
-//     $shop = Shop::first();
-
-//     $body = '{
-//     "product": {
-//         "title": "Hay qua tr qa dat",
-//         "body_html": "ko hay lam",
-//         "vendor": "luongdinhkhang",
-//     }
-//     }';
-
-//     $request = new Psr7Request('POST', 'https://luongdinhkhang.myshopify.com/admin/api/2022-07/products.json', $headers, $body);
-//     $res = $client->sendAsync($request)->wait();
-//     echo $res->getBody();
-
-});
-
-
-
+Route::get('/destroyWebhook',[ShopifyController::class,'destroy']);;
+Route::get('graph',[ShopifyController::class,'callGraphQL'])->name('graphQL');
