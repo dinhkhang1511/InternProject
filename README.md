@@ -17,9 +17,9 @@ Hướng dẫn sử dụng:
     * Tạo thư mục env
 + Chạy các lệnh command ở thư mục vừa clone: 
     * composer install, php artisan key:generate, php artisan migrate
-+ Mở ngrok .exe chạy lệnh 'ngrok http 8000', chạy php artisan serve, apache và mysql của xampp;
-+ Vào ShopifyController->registerWebhook() thay biến $ngrok_url bằng ngrok vừa start.
++ Mở ngrok.exe chạy lệnh 'ngrok http 8000', chạy php artisan serve, apache và mysql của xampp;
++ Vào config->shopify.php thay biến $ngrok_url bằng ngrok vừa start.
 + Vào partner phần app setup thay url app và url redirect bằng url ngrok vừa start 
 + Vào port vừa đc start bằng artisan serve để vào web ('http://127.0.0.1:8000/shopify')
-+ Nhập lệnh 'php artisan queue:work' để chạy queue. 
-+ Nhập tên store đc tạo trong app shopify để xác thực và sử dụng
++ Mở một terminal mới cd đến thư mục project nhập lệnh 'php artisan queue:work' để chạy queue. 
++ Nhập tên store đc tạo trong partner shopify(chủ app) để xác thực và sử dụng
